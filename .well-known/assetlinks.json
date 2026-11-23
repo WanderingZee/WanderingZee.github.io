@@ -1,0 +1,8 @@
+[{
+      "relation": ["delegate_permission/common.handle_all_urls"],
+      "target": {
+        "namespace": "android_app",
+        "package_name": "io.github.wanderingzee.twa",
+        "sha256_cert_fingerprints": ["4F:4C:74:37:0A:91:A3:0A:50:21:BA:B7:75:8D:5E:2C:10:00:C5:92:39:B8:48:EC:B1:EB:34:D7:AD:8B:A9:C6"]
+      }
+    }]
