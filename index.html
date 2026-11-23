@@ -218,7 +218,43 @@ function onMidi(st,d1,d2){const t=st&0xF0;let key=null;
  $('last').textContent='Last message: '+key;
  if(learn){for(const k in D.map)if(D.map[k]==learn)delete D.map[k];D.map[key]=learn;learn=null;save();renderMaps();return}
  const a=D.map[key];if(a=='toggle')toggle();if(a=='next')move(1);if(a=='prev')move(-1);if(a=='restart'){stop();start()}if(a=='spdUp')setSpeed(D.st.speed+5);if(a=='spdDn')setSpeed(D.st.speed-5)}
-function parseBLE(d){let i=1,run=0;while(i<d.length){let b=d[i];if(b&0x80){if(i+1<d.length&&(d[i+1]&0x80)){i++;b=d[i]}}
+function parseBLE(d) {
+  let i = 1;
+  let status = 0;
+
+  while (i < d.length) {
+    // Skip the BLE-MIDI timestamp byte
+    if (d[i] & 0x80) {
+      i++;
+    }
+
+    if (i >= d.length) break;
+
+    // Read MIDI status byte, if present
+    if (d[i] & 0x80) {
+      status = d[i++];
+    }
+
+    if (!status) break;
+
+    const type = status & 0xF0;
+
+    if (type === 0xF0) {
+      status = 0;
+      continue;
+    }
+
+    const count =
+      (type === 0xC0 || type === 0xD0) ? 1 : 2;
+
+    if (i + count > d.length) break;
+
+    const d1 = d[i++];
+    const d2 = count === 2 ? d[i++] : 0;
+
+    onMidi(status, d1, d2);
+  }
+}
   if(b&0x80){run=b;i++}else b=run;const st=run,n=((st&0xF0)==0xC0||(st&0xF0)==0xD0)?1:2;if(st>=0xF0){i++;continue}
   onMidi(st,d[i]||0,n==2?(d[i+1]||0):0);i+=n}}
 $('btcon').onclick=async()=>{
