@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>The Anxious Click</title>
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#17894a">
+<meta name="mobile-web-app-capable" content="yes">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Pirata+One&display=swap" rel="stylesheet">
+<style>
+:root{color-scheme:light;--bg:#fff;--sf:#f4faf6;--tx:#10261a;--mu:#5c7466;--ac:#17894a;--ln:#d3e6da;--ok:#17894a;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+
+*{box-sizing:border-box}html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--tx);font:16px/1.4 "Barlow Condensed","Arial Narrow",system-ui,sans-serif;max-width:640px;margin:auto}
+button,input,select{font:inherit;color:inherit}
+nav{display:flex;border-bottom:1px solid var(--ln);position:sticky;top:0;background:var(--bg);z-index:5}
+nav button{flex:1;padding:14px 2px;border:0;background:none;font-size:16px;font-weight:600;color:var(--mu);border-bottom:3px solid transparent}
+nav button.on{color:var(--tx);border-color:var(--ac)}
+section{display:none;padding:14px}section.on{display:block}
+.big{font-size:84px;font-weight:700;line-height:1;text-align:center;font-variant-numeric:tabular-nums}
+.sub{text-align:center;color:var(--mu)}
+.beats{display:flex;gap:6px;margin:8px 0;flex-wrap:wrap}
+.beats i{width:32px;height:32px;border-radius:50%;border:2px solid var(--ln);transition:background .05s}
+.beats i.hit{background:var(--tx);border-color:var(--tx)}.beats i.hit.acc{background:var(--c,var(--ac));border-color:var(--c,var(--ac))}
+.row{display:flex;gap:8px;align-items:center;margin:8px 0}
+.btn{padding:12px 16px;min-height:48px;border:1px solid var(--ln);background:var(--sf);border-radius:10px;font-weight:600;font-size:18px;touch-action:manipulation}.btn:active{transform:scale(.97)}
+.btn.pri{background:var(--ac);color:#fff;border-color:var(--ac)}
+.go{width:100%;padding:22px;font-size:28px;margin:10px 0}
+.item{display:flex;align-items:center;gap:8px;padding:12px;background:var(--sf);border:1px solid var(--ln);border-radius:8px;margin:6px 0}
+.item.cur{border-color:var(--ac);border-width:2px;background:color-mix(in srgb,var(--ac) 14%,var(--bg))}.item.sg{border-left:10px solid var(--c)}.num{font-weight:700;color:var(--mu);width:22px;text-align:center}.dot{width:12px;height:12px;border-radius:50%;flex:none}#plist .item{padding:16px 12px;font-size:20px;cursor:pointer}.sw{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px}.swb{width:36px;height:36px;border-radius:50%;border:3px solid var(--bg);box-shadow:0 0 0 1px var(--ln);padding:0}.swb.on{box-shadow:0 0 0 3px var(--tx)}.player{position:sticky;bottom:0;background:var(--bg);border-top:3px solid var(--c,var(--ac));padding:10px 0 4px;margin-top:10px}.pb{font-size:84px;font-weight:700;line-height:1;font-variant-numeric:tabular-nums;color:var(--ac);min-width:130px}.item .t{flex:1;min-width:0}.item small{color:var(--mu);display:block}
+label{display:block;font-size:14px;color:var(--mu);margin-top:10px}
+input,select{width:100%;padding:13px;font-size:17px;border:1px solid var(--ln);background:var(--sf);border-radius:8px}
+.g{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.tm{display:grid;grid-template-columns:1fr 1fr auto;gap:6px;margin:4px 0}
+.sm{padding:8px 12px;min-height:44px;font-size:16px}
+h2{font-size:22px;margin:6px 0}.brand{display:flex;align-items:center;justify-content:center;text-align:center;gap:10px;padding:10px 14px 6px}.brand b{font-family:"Pirata One","UnifrakturCook",Georgia,serif;font-weight:400;font-size:34px;flex:1;letter-spacing:.5px;line-height:1}.ic{height:34px;width:auto;flex:none}.ic.lg{height:56px}.empty{display:flex;align-items:center;gap:10px}input[type=checkbox]{width:24px;height:24px;flex:none;accent-color:var(--ac)}input[type=range]{accent-color:var(--ac);padding:0}.pat[data-v=a]{background:var(--ac);color:#fff;border-color:var(--ac)}.pat[data-v=m]{opacity:.5;text-decoration:line-through}textarea{width:100%;padding:10px;border:1px solid var(--ln);background:var(--sf);color:var(--tx);border-radius:8px;font:13px monospace}.chk{display:flex;align-items:center;gap:10px;margin:12px 0;color:var(--tx);font-size:16px}#setui h2{margin-top:20px;border-bottom:1px solid var(--ln)}
+#pset{font-family:"Pirata One","UnifrakturCook",Georgia,serif;font-size:36px;font-weight:400;border:0;background:transparent;padding:4px 0;margin:0 0 4px;color:var(--tx)}
+.ps{display:flex;align-items:center;gap:12px;padding:14px 10px;border-bottom:1px solid var(--ln);border-left:10px solid var(--c);cursor:pointer}
+.ps .n{font-size:26px;color:var(--mu);width:36px;text-align:right;flex:none}
+.ps .nm{flex:1;min-width:0;font-size:30px;font-weight:600;line-height:1.1;overflow-wrap:anywhere}
+.ps .bp{font-size:24px;font-weight:700;color:var(--mu);white-space:nowrap}
+.ps.cur{background:color-mix(in srgb,var(--c) 16%,var(--bg))}.ps.cur .nm{font-weight:800}.ps.cur .n,.ps.cur .bp{color:var(--tx)}
+.ptop{display:flex;align-items:center;gap:14px}.pinfo{flex:1;min-width:0}.pinfo b{display:block;font-size:30px;line-height:1.05;overflow-wrap:anywhere}.pinfo span{font-size:22px;color:var(--mu)}
+.ctl{display:flex;gap:8px;margin:8px 0}.cb{flex:1;min-height:64px;font-size:22px}.cb.big{flex:2;font-size:30px}.btn.pri.stopm{background:#d6402f;border-color:#d6402f}
+.vr{display:flex;align-items:center;justify-content:center;gap:14px}.vr b{min-width:56px;text-align:center;font-size:20px}.vr .btn{min-width:56px}html,body{overscroll-behavior-y:contain}
+.note{color:var(--mu);font-size:14px}
+</style></head><body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+<symbol id="dog" viewBox="0 0 48 48"><path d="M10 40V25C10 15 16 9 24 9l3-5 4 6c3 1 5 3 6 6l7 6c1 2 0 4-2 4l-6 1c-1 4-2 8-2 12z" style="fill:var(--ac)"/><circle cx="33" cy="17" r="1.5" style="fill:var(--bg)"/><path d="M10 36h24" style="stroke:var(--bg);stroke-width:2"/></symbol>
+<symbol id="snake" viewBox="0 0 76 48"><path d="M4 34C12 34 12 14 20 14S28 34 36 34 44 14 52 14 60 24 65 22" style="fill:none;stroke:var(--ac);stroke-width:3.5;stroke-linecap:round"/><ellipse cx="67" cy="22" rx="4.5" ry="3" style="fill:var(--ac)"/><circle cx="67.5" cy="21" r=".9" style="fill:var(--bg)"/><path d="M71.5 22h3M74.5 22l1.5-1.2M74.5 22l1.5 1.2" style="stroke:var(--ac);stroke-width:1;stroke-linecap:round;fill:none"/></symbol>
+</defs></svg>
+<div class="brand"><b>The Anxious Click</b></div>
+<nav id="nav"></nav>
+
+<section id="play">
+ <select id="pset"></select>
+ <div id="plist"></div>
+ <div class="player" id="player">
+  <div class="ptop"><div class="pb" id="pbpm">120</div><div class="pinfo"><b id="psong">No song</b><span id="pbar">Ready</span></div></div>
+  <div class="beats" id="pbeats"></div>
+  <div class="ctl"><button class="btn cb" id="prev">◀ Back</button><button class="btn pri cb big" id="toggle">▶ Start</button><button class="btn cb" id="next">Next ▶</button></div>
+  <div class='vr'><span class='note'>Volume</span><button class='btn sm' id='vdn' aria-label='Quieter'>−</button><b id='vlab'>80%</b><button class='btn sm' id='vup' aria-label='Louder'>+</button></div>
+ </div>
+</section>
+
+<section id="songs">
+ <div class="row"><button class="btn pri" id="newsong">+ New song</button></div>
+ <div id="slist"></div>
+ <div id="sedit"></div>
+</section>
+
+<section id="sets">
+ <div class="row"><input id="setname" placeholder="Setlist name"><button class="btn pri" id="newset">+ Create</button></div>
+ <div id="setlists"></div>
+</section>
+
+<div id='fl' style='position:fixed;inset:0;opacity:0;pointer-events:none;z-index:50'></div>
+<section id='set'><div id='setui'></div></section>
+
+<section id="pedal">
+ <h2>M-Vave Chocolate Plus</h2>
+ <p class="note">Built for the M-Vave Chocolate Plus footswitch controller. Turn the pedal on in Bluetooth mode, then tap Connect and pick it from the list. Use Chrome on Android.</p>
+ <div class="row"><button class="btn pri" id="btcon">Connect Bluetooth</button><button class="btn" id="usbcon">Use USB/paired MIDI</button></div>
+ <div id="mstat" class="note">Not connected</div>
+ <h2 style="margin-top:18px">Pedal buttons</h2>
+ <p class="note">Tap Learn, then press the footswitch you want for that action.</p>
+ <div id="maps"></div>
+ <div class="note" id="last"></div>
+</section>
+
+<script>
+const $=id=>document.getElementById(id);
+const SOUNDS={beep:'Beep',wood:'Woodblock',cow:'Cowbell',hat:'Hi-hat',rim:'Rimshot',stick:'Side stick',kick:'Kick',clave:'Clave'};
+let D={songs:[],sets:[],cur:null,song:null,map:{},vol:.8};
+try{const s=localStorage.getItem('stageclick');if(s)D=Object.assign(D,JSON.parse(s))}catch(e){}
+const save=()=>{try{localStorage.setItem('stageclick',JSON.stringify(D))}catch(e){}};
+const uid=()=>Math.random().toString(36).slice(2,9);
+if(!D.songs.length){D.songs=[{id:uid(),name:'Example song',beats:4,sub:1,sound:'wood',countIn:1,tempo:[{bar:1,bpm:100},{bar:9,bpm:120}]}];D.sets=[{id:uid(),name:'My set',songs:[D.songs[0].id]}];D.cur=D.sets[0].id;D.song=D.songs[0].id}
+const song=id=>D.songs.find(s=>s.id==id);
+const PAL=['#17894a','#0e9aa7','#2b6fd6','#6a4fd1','#d6409f','#e5484d','#f08a1c','#d4a40a'];
+D.songs.forEach((x,i)=>{if(!x.color)x.color=PAL[i%PAL.length]});
+const DEF={theme:'light',accent:PAL[0],text:100,accVol:1,subVol:.4,pitch:0,speed:100,flash:false,vib:false,wake:false,auto:false,defSound:'wood',protect:true};
+D.st=Object.assign({},DEF,D.st||{});
+const curSet=()=>D.sets.find(s=>s.id==D.cur);
+
+/* tabs */
+const tabs=[['play','Play'],['songs','Songs'],['sets','Setlists'],['pedal','Pedal'],['set','Settings']];
+$('nav').innerHTML=tabs.map(t=>`<button data-t="${t[0]}">${t[1]}</button>`).join('');
+function tab(t){document.querySelectorAll('section').forEach(s=>s.classList.toggle('on',s.id==t));document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('on',b.dataset.t==t))}
+$('nav').onclick=e=>{if(e.target.dataset.t){tab(e.target.dataset.t);render();if(e.target.dataset.t=='set')drawSettings()}};
+
+/* audio */
+let ctx,master,noiseBuf;
+function initAudio(){if(ctx){ctx.resume();return}ctx=new(window.AudioContext||window.webkitAudioContext)();master=ctx.createGain();master.connect(ctx.destination);ctx.onstatechange=onCtxState;
+ noiseBuf=ctx.createBuffer(1,ctx.sampleRate*.3,ctx.sampleRate);const d=noiseBuf.getChannelData(0);for(let i=0;i<d.length;i++)d[i]=Math.random()*2-1}
+function osc(t,type,f,dur,g,f2){const o=ctx.createOscillator(),a=ctx.createGain();o.type=type;const P=Math.pow(2,D.st.pitch/12);o.frequency.setValueAtTime(f*P,t);if(f2)o.frequency.exponentialRampToValueAtTime(f2*P,t+dur);
+ a.gain.setValueAtTime(g,t);a.gain.exponentialRampToValueAtTime(.001,t+dur);o.connect(a);a.connect(master);o.start(t);o.stop(t+dur+.02)}
+function noise(t,ftype,f,q,dur,g){const n=ctx.createBufferSource(),fl=ctx.createBiquadFilter(),a=ctx.createGain();n.buffer=noiseBuf;fl.type=ftype;fl.frequency.value=f*Math.pow(2,D.st.pitch/12);fl.Q.value=q;
+ a.gain.setValueAtTime(g,t);a.gain.exponentialRampToValueAtTime(.001,t+dur);n.connect(fl);fl.connect(a);a.connect(master);n.start(t);n.stop(t+dur+.02)}
+function click(t,kind,acc,weak){const k=acc?1.5:1,g=(weak?D.st.subVol:1)*(acc?D.st.accVol:1);
+ switch(kind){
+  case'beep':osc(t,'sine',880*k,.06,g);break;
+  case'wood':osc(t,'triangle',900*k,.04,g);noise(t,'bandpass',2000*k,3,.02,.5*g);break;
+  case'cow':osc(t,'square',560*(acc?1.2:1),.18,.35*g);osc(t,'square',845*(acc?1.2:1),.18,.35*g);break;
+  case'hat':noise(t,'highpass',acc?6000:8500,1,acc?.12:.05,g);break;
+  case'rim':noise(t,'bandpass',1800,1.5,.07,g);osc(t,'triangle',acc?500:380,.07,.7*g);break;
+  case'stick':osc(t,'triangle',1250*k,.03,g);noise(t,'highpass',3000,1,.02,.4*g);break;
+  case'kick':osc(t,'sine',acc?180:130,.15,1.2*g,45);break;
+  case'clave':osc(t,'sine',2400*(acc?1.25:1),.05,g);break}}
+
+/* engine */
+let run=false,tmr,nextT,bar,step,pl=null;
+const tempoAt=(s,b)=>{let r=s.tempo[0].bpm;for(const t of s.tempo)if(t.bar<=b)r=t.bpm;return r};
+function start(){const s=song(D.song);if(!s)return;initAudio();protect();master.gain.value=D.vol;
+ pl=s;run=true;bar=1-(s.countIn||0);step=0;nextT=ctx.currentTime+.1;tmr=setInterval(sched,25);$('toggle').textContent='■ Stop';$('toggle').classList.add('stopm');render()}
+function stop(){run=false;clearInterval(tmr);try{if(ka)ka.pause();if(master&&ctx){master.disconnect();master=ctx.createGain();master.gain.value=D.vol;master.connect(ctx.destination)}if('mediaSession' in navigator)navigator.mediaSession.playbackState='paused'}catch(e){}$('toggle').textContent='▶ Start';$('toggle').classList.remove('stopm');$('pbar').textContent='Ready';document.querySelectorAll('#pbeats i').forEach(i=>i.classList.remove('hit','acc'))}
+function sched(){const s=pl;const per=s.beats*s.sub;
+ if(nextT<ctx.currentTime-.1)nextT=ctx.currentTime+.05;while(nextT<ctx.currentTime+(document.hidden?2.5:.12)){
+  const beat=Math.floor(step/s.sub),subTick=step%s.sub!=0,bpm=tempoAt(s,bar)*D.st.speed/100,pt=(s.pat&&s.pat[beat])||(beat==0?'a':'n'),acc=!subTick&&pt=='a';
+  if(pt!='m')click(nextT,s.sound,acc,subTick);
+  const b=bar,bt=beat,a=acc,st=subTick,bp=bpm;
+  if(!st)setTimeout(()=>{if(!run)return;ui(b,bt,a,bp)},Math.max(0,(nextT-ctx.currentTime)*1000));
+  nextT+=60/bpm/s.sub;step++;if(step>=per){step=0;bar++;if(s.length>0&&bar>s.length){clearInterval(tmr);setTimeout(()=>{if(run)endSong()},Math.max(0,(nextT-ctx.currentTime)*1000));return}}}}
+function ui(b,bt,a,bpm){if(D.st.flash)flash(a);if(D.st.vib&&navigator.vibrate)navigator.vibrate(a?40:15);$('pbpm').textContent=Math.round(bpm);$('pbar').textContent=b<1?'Count-in '+(b+(pl.countIn||0)):'Bar '+b;
+ const el=document.querySelectorAll('#pbeats i');el.forEach(i=>i.classList.remove('hit','acc'));if(el[bt]){el[bt].classList.add('hit');if(a)el[bt].classList.add('acc')}}
+function pick(id){const was=run;if(run)stop();D.song=id;save();render();if(was)start()}
+function move(d){const st=curSet();if(!st||!st.songs.length)return;let i=st.songs.indexOf(D.song);i=Math.min(st.songs.length-1,Math.max(0,(i<0?0:i)+d));pick(st.songs[i])}
+function toggle(){run?stop():start()}
+$('pset').onchange=e=>{D.cur=e.target.value;const t=curSet();if(t&&t.songs.length&&!t.songs.includes(D.song)){if(run)stop();D.song=t.songs[0]}save();render()};
+$('toggle').onclick=toggle;$('next').onclick=()=>move(1);$('prev').onclick=()=>move(-1);
+function setVol(v){D.vol=Math.min(1,Math.max(0,Math.round(v*20)/20));if(master)master.gain.value=D.vol;$('vlab').textContent=Math.round(D.vol*100)+'%';save()}
+$('vdn').onclick=()=>setVol(D.vol-.1);$('vup').onclick=()=>setVol(D.vol+.1);
+
+/* render */
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+function render(){
+ const s=song(D.song),st=curSet();
+ $('pset').innerHTML=D.sets.map(t=>`<option value="${t.id}" ${t.id==D.cur?'selected':''}>${esc(t.name)}</option>`).join('');$('psong').textContent=s?s.name:'No song';
+ if(s){if(!run)$('pbpm').textContent=Math.round(tempoAt(s,1)*D.st.speed/100);$('pbeats').innerHTML='<i></i>'.repeat(s.beats);$('player').style.setProperty('--c',s.color)}
+ $('plist').innerHTML=st?(st.songs.length?'':'<p class="note" style="font-size:20px;padding:12px 0">Nothing in this setlist yet. Add songs in the Setlists tab.</p>')+st.songs.map((id,i)=>{const x=song(id);return x?`<div class="ps ${id==D.song?'cur':''}" style="--c:${x.color}" data-pick="${id}"><span class="n">${id==D.song?'▶':i+1}</span><div class="nm">${esc(x.name)}</div><span class="bp">${x.tempo.map(t=>t.bpm).join(' → ')}</span></div>`:''}).join(''):'';
+ $('slist').innerHTML=D.songs.map(x=>`<div class="item sg" style="--c:${x.color}"><div class="t"><b>${esc(x.name)}</b><small>${x.tempo.length} tempo ${x.tempo.length>1?'changes':'setting'} · ${SOUNDS[x.sound]}</small></div><button class="btn sm" data-edit="${x.id}">Edit</button></div>`).join('');
+ $('setlists').innerHTML=D.sets.map(t=>`<div class="item ${t.id==D.cur?'cur':''}" style="display:block"><div class="row"><div class="t" style="flex:1"><b>${esc(t.name)}</b><small>${t.songs.length} songs</small></div>
+  <button class="btn sm" data-use="${t.id}">Play this set</button><button class="btn sm" data-delset="${t.id}">Delete</button></div>
+  ${t.songs.map((id,i)=>`<div class="row"><span class="dot" style="background:${song(id)?.color}"></span><span style="flex:1">${esc(song(id)?.name||'?')}</span><button class="btn sm" data-up="${t.id}:${i}" aria-label="Move up">▲</button><button class="btn sm" data-dn="${t.id}:${i}" aria-label="Move down">▼</button><button class="btn sm" data-rm="${t.id}:${i}" aria-label="Remove from setlist">✕</button></div>`).join('')}
+  <select data-add="${t.id}"><option value="">Add a song…</option>${D.songs.map(x=>`<option value="${x.id}">${esc(x.name)}</option>`).join('')}</select></div>`).join('');
+ renderMaps()}
+document.addEventListener('click',e=>{const d=e.target.closest('[data-pick],[data-edit],[data-use],[data-delset],[data-up],[data-dn],[data-rm],[data-learn]');if(!d)return;const ds=d.dataset;
+ if(ds.pick)pick(ds.pick);if(ds.edit)edit(ds.edit);
+ if(ds.use){D.cur=ds.use;const t=curSet();if(t.songs.length&&!t.songs.includes(D.song))D.song=t.songs[0];save();render();tab('play')}
+ if(ds.delset&&confirm('Delete this setlist?')){D.sets=D.sets.filter(t=>t.id!=ds.delset);if(D.cur==ds.delset)D.cur=D.sets[0]?.id;save();render()}
+ for(const k of['up','dn','rm']){if(ds[k]){const[i,n]=ds[k].split(':');const t=D.sets.find(x=>x.id==i),j=+n;
+  if(k=='rm')t.songs.splice(j,1);else{const o=k=='up'?j-1:j+1;if(o>=0&&o<t.songs.length)[t.songs[j],t.songs[o]]=[t.songs[o],t.songs[j]]}save();render()}}
+ if(ds.learn){learn=ds.learn;renderMaps()}});
+document.addEventListener('change',e=>{if(e.target.dataset.add&&e.target.value){D.sets.find(t=>t.id==e.target.dataset.add).songs.push(e.target.value);save();render()}});
+$('newset').onclick=()=>{const n=$('setname').value.trim()||'New setlist';const t={id:uid(),name:n,songs:[]};D.sets.push(t);if(!D.cur)D.cur=t.id;$('setname').value='';save();render()};
+
+/* song editor */
+let ed=null;
+$('newsong').onclick=()=>{ed={id:uid(),name:'New song',color:PAL[D.songs.length%PAL.length],beats:4,sub:1,sound:D.st.defSound,length:0,pat:null,countIn:1,tempo:[{bar:1,bpm:120}],isNew:true};drawEd()};
+function edit(id){ed=JSON.parse(JSON.stringify(song(id)));drawEd();$('sedit').scrollIntoView()}
+function drawEd(){if(!ed){$('sedit').innerHTML='';return}
+ $('sedit').innerHTML=`<div class="item" style="display:block;margin-top:14px"><h2>${ed.isNew?'New song':'Edit song'}</h2>
+ <label>Name</label><input id="e_n" value="${esc(ed.name)}">
+ <label>Colour</label><div class="sw">${PAL.map(c=>`<button class="swb ${c==ed.color?'on':''}" data-col="${c}" style="background:${c}" aria-label="Colour ${c}"></button>`).join('')}</div>
+ <div class="g"><div><label>Beats per bar</label><input id="e_b" type="number" min="1" max="16" value="${ed.beats}"></div>
+ <div><label>Count-in bars</label><input id="e_c" type="number" min="0" max="4" value="${ed.countIn}"></div>
+ <div><label>Click sound</label><select id="e_s">${Object.entries(SOUNDS).map(([k,v])=>`<option value="${k}" ${k==ed.sound?'selected':''}>${v}</option>`).join('')}</select></div>
+ <div><label>Subdivision</label><select id="e_u">${[[1,'Quarter notes'],[2,'Eighth notes'],[3,'Triplets'],[4,'Sixteenth notes']].map(([v,n])=>`<option value="${v}" ${v==ed.sub?'selected':''}>${n}</option>`).join('')}</select></div></div>
+ <label>Song length in bars (0 loops until you stop)</label><input id="e_l" type="number" min="0" max="999" value="${ed.length||0}">
+ <label>Beat pattern (tap a beat to cycle accent, normal, muted)</label><div class='sw'>${Array.from({length:ed.beats},(_,i)=>{const v=(ed.pat&&ed.pat[i])||(i==0?'a':'n');return `<button class='btn sm pat' data-pi='${i}' data-v='${v}'>${i+1} ${v=='a'?'Accent':v=='m'?'Mute':'Normal'}</button>`}).join('')}</div>
+ <label>Tempo map (tempo changes at the start of a bar)</label>
+ <div class="tm note"><span>From bar</span><span>BPM</span><span></span></div>
+ ${ed.tempo.map((t,i)=>`<div class="tm"><input type="number" min="1" value="${t.bar}" data-tb="${i}" ${i==0?'disabled':''}><input type="number" min="20" max="300" value="${t.bpm}" data-tp="${i}">${i?`<button class="btn sm" data-trm="${i}">✕</button>`:'<span></span>'}</div>`).join('')}
+ <div class="row"><button class="btn sm" id="addt">Add tempo change</button></div>
+ <div class="row"><button class="btn pri" id="saves" style="flex:1">Save song</button><button class="btn" id="cancels">Cancel</button>${ed.isNew?'':'<button class="btn" id="dels">Delete</button>'}</div></div>`;
+ const rd=()=>{ed.name=$('e_n').value;ed.beats=Math.max(1,+$('e_b').value||4);ed.length=Math.max(0,+$('e_l').value||0);if(ed.pat)ed.pat=Array.from({length:ed.beats},(_,j)=>ed.pat[j]||(j?'n':'a'));ed.countIn=Math.max(0,+$('e_c').value||0);ed.sound=$('e_s').value;ed.sub=+$('e_u').value;
+  document.querySelectorAll('[data-tb]').forEach(i=>ed.tempo[+i.dataset.tb].bar=Math.max(1,+i.value||1));document.querySelectorAll('[data-tp]').forEach(i=>ed.tempo[+i.dataset.tp].bpm=Math.min(300,Math.max(20,+i.value||120)));
+  ed.tempo[0].bar=1;ed.tempo=[ed.tempo[0],...ed.tempo.slice(1).sort((a,b)=>a.bar-b.bar)]};
+ $('e_b').onchange=()=>{rd();drawEd()};
+ document.querySelectorAll('[data-pi]').forEach(b=>b.onclick=()=>{rd();const i=+b.dataset.pi;ed.pat=ed.pat||Array.from({length:ed.beats},(_,j)=>j?'n':'a');const c={a:'n',n:'m',m:'a'};ed.pat[i]=c[ed.pat[i]||(i?'n':'a')];drawEd()});
+ document.querySelectorAll('[data-col]').forEach(b=>b.onclick=()=>{rd();ed.color=b.dataset.col;drawEd()});
+ $('addt').onclick=()=>{rd();const l=ed.tempo[ed.tempo.length-1];ed.tempo.push({bar:l.bar+8,bpm:l.bpm});drawEd()};
+ document.querySelectorAll('[data-trm]').forEach(b=>b.onclick=()=>{rd();ed.tempo.splice(+b.dataset.trm,1);drawEd()});
+ $('e_s').onchange=()=>{rd();initAudio();master.gain.value=D.vol;const t=ctx.currentTime+.05;click(t,ed.sound,true);click(t+.4,ed.sound,false)};
+ $('saves').onclick=()=>{rd();delete ed.isNew;const i=D.songs.findIndex(s=>s.id==ed.id);i<0?D.songs.push(ed):D.songs[i]=ed;if(!D.song)D.song=ed.id;ed=null;save();render();drawEd()};
+ $('cancels').onclick=()=>{ed=null;drawEd()};
+ if($('dels'))$('dels').onclick=()=>{if(!confirm('Delete this song?'))return;D.songs=D.songs.filter(s=>s.id!=ed.id);D.sets.forEach(t=>t.songs=t.songs.filter(x=>x!=ed.id));if(D.song==ed.id)D.song=D.songs[0]?.id||null;ed=null;save();render();drawEd()}}
+
+/* MIDI */
+const ACTIONS={toggle:'Start / stop',next:'Next song',prev:'Previous song',restart:'Restart song',spdUp:'Speed up 5%',spdDn:'Slow down 5%'};
+let learn=null;
+function renderMaps(){$('maps').innerHTML=Object.entries(ACTIONS).map(([k,v])=>{const key=Object.keys(D.map).find(x=>D.map[x]==k);
+ return`<div class="item"><div class="t"><b>${v}</b><small>${learn==k?'Press a pedal button now…':key?'Mapped to '+key:'Not set'}</small></div><button class="btn sm" data-learn="${k}">${learn==k?'Waiting':'Learn'}</button></div>`}).join('')}
+function onMidi(st,d1,d2){const t=st&0xF0;let key=null;
+ if(t==0x90&&d2>0)key='Note '+d1;else if(t==0xB0&&d2>0)key='CC '+d1;else if(t==0xC0)key='PC '+d1;if(!key)return;
+ $('last').textContent='Last message: '+key;
+ if(learn){for(const k in D.map)if(D.map[k]==learn)delete D.map[k];D.map[key]=learn;learn=null;save();renderMaps();return}
+ const a=D.map[key];if(a=='toggle')toggle();if(a=='next')move(1);if(a=='prev')move(-1);if(a=='restart'){stop();start()}if(a=='spdUp')setSpeed(D.st.speed+5);if(a=='spdDn')setSpeed(D.st.speed-5)}
+function parseBLE(d){let i=1,run=0;while(i<d.length){let b=d[i];if(b&0x80){if(i+1<d.length&&(d[i+1]&0x80)){i++;b=d[i]}}
+  if(b&0x80){run=b;i++}else b=run;const st=run,n=((st&0xF0)==0xC0||(st&0xF0)==0xD0)?1:2;if(st>=0xF0){i++;continue}
+  onMidi(st,d[i]||0,n==2?(d[i+1]||0):0);i+=n}}
+$('btcon').onclick=async()=>{
+ if(!navigator.bluetooth){$('mstat').textContent='Web Bluetooth isn’t available here. Open this page in Chrome on Android.';return}
+ try{const S='03b80e5a-ede8-4b33-a751-6ce34ec4c700',C='7772e5db-3868-4112-a1a9-f2669d106bf3';
+  const dev=await navigator.bluetooth.requestDevice({filters:[{services:[S]}]});const srv=await dev.gatt.connect();
+  const ch=await(await srv.getPrimaryService(S)).getCharacteristic(C);await ch.startNotifications();
+  ch.addEventListener('characteristicvaluechanged',e=>parseBLE(new Uint8Array(e.target.value.buffer)));
+  dev.addEventListener('gattserverdisconnected',()=>$('mstat').textContent='Disconnected. Tap Connect to retry.');
+  $('mstat').textContent='Connected to '+(dev.name||'pedal')}catch(err){$('mstat').textContent='Couldn’t connect: '+err.message}};
+$('usbcon').onclick=async()=>{
+ if(!navigator.requestMIDIAccess){$('mstat').textContent='Web MIDI isn’t available in this browser.';return}
+ try{const a=await navigator.requestMIDIAccess();let n=0;a.inputs.forEach(i=>{n++;i.onmidimessage=e=>onMidi(e.data[0],e.data[1],e.data[2])});
+  $('mstat').textContent=n?n+' MIDI input(s) listening':'No MIDI inputs found'}catch(err){$('mstat').textContent='MIDI access denied: '+err.message}};
+document.addEventListener('keydown',e=>{if(e.target.tagName=='INPUT'||e.target.tagName=='SELECT')return;if(e.code=='Space'){e.preventDefault();toggle()}if(e.key=='ArrowRight')move(1);if(e.key=='ArrowLeft')move(-1)});
+let wl=null;
+async function wake(){try{if((D.st.wake||D.st.protect)&&navigator.wakeLock&&!wl){wl=await navigator.wakeLock.request('screen');wl.addEventListener('release',()=>{wl=null})}else if(!(D.st.wake||D.st.protect)&&wl){await wl.release();wl=null}}catch(e){}}
+document.addEventListener('visibilitychange',()=>{if(document.visibilityState=='visible')wake()});
+function apply(){const r=document.documentElement.style,d=D.st.theme=='dark';
+ const th=d?{'--bg':'#0f1a14','--sf':'#17261d','--tx':'#e9f4ed','--mu':'#8fa799','--ln':'#29402f'}:{'--bg':'#fff','--sf':'#f4faf6','--tx':'#10261a','--mu':'#5c7466','--ln':'#d3e6da'};
+ for(const k in th)r.setProperty(k,th[k]);r.setProperty('--ac',D.st.accent);r.colorScheme=d?'dark':'light';document.body.style.zoom=D.st.text/100;wake()}
+function flash(a){const f=$('fl');f.style.transition='none';f.style.background=(pl&&pl.color)||D.st.accent;f.style.opacity=a?.35:.15;requestAnimationFrame(()=>{f.style.transition='opacity .18s';f.style.opacity=0})}
+function endSong(){const st=curSet(),i=st?st.songs.indexOf(D.song):-1;if(D.st.auto&&st&&i>=0&&i<st.songs.length-1){stop();D.song=st.songs[i+1];save();render();start()}else stop()}
+function setSpeed(v){D.st.speed=Math.min(150,Math.max(25,v));save();if(run)$('pbar').textContent='Speed '+D.st.speed+'%';else render()}
+function drawSettings(){const S=D.st;
+ const rng=(k,l,min,max,st,u)=>`<label>${l}: <b id='v_${k}'>${S[k]}${u}</b></label><input type='range' data-k='${k}' data-u='${u}' min='${min}' max='${max}' step='${st}' value='${S[k]}'>`;
+ const chk=(k,l)=>`<label class='chk'><input type='checkbox' data-k='${k}' ${S[k]?'checked':''}>${l}</label>`;
+ const opt=(v,n,cur)=>`<option value='${v}' ${v==cur?'selected':''}>${n}</option>`;
+ $('setui').innerHTML=`<h2>Appearance</h2>
+ <label>Theme</label><select data-k='theme'>${opt('light','Light',S.theme)}${opt('dark','Dark stage',S.theme)}</select>
+ <label>Accent colour</label><div class='sw'>${PAL.map(c=>`<button class='swb ${c==S.accent?'on':''}' data-acc='${c}' style='background:${c}' aria-label='Accent ${c}'></button>`).join('')}</div>
+ ${rng('text','Text size',80,160,5,'%')}
+ <h2>Click sound</h2>
+ <label>Default sound for new songs</label><select data-k='defSound'>${Object.entries(SOUNDS).map(([k,v])=>opt(k,v,S.defSound)).join('')}</select>
+ ${rng('accVol','Accent loudness',0.5,1.5,0.05,'×')}
+ ${rng('subVol','Subdivision loudness',0.1,1,0.05,'×')}
+ ${rng('pitch','Pitch shift',-12,12,1,' semitones')}
+ <h2>Practice and performance</h2>
+ ${rng('speed','Practice speed',25,150,5,'%')}
+ ${chk('protect','Performance protection: keep the click running through lock screen, notifications and audio interruptions')}
+ <p class='note'>Your phone can still interrupt any app. For a gig: turn on Airplane mode, then switch Bluetooth back on for the pedal. That blocks calls and notifications completely. Do Not Disturb works too.</p>
+ ${chk('auto','Auto-advance to the next song when a song with a set length ends')}
+ ${chk('flash','Flash the screen on the beat')}
+ ${chk('vib','Vibrate on the beat')}
+ ${chk('wake','Keep the screen on')}
+ <h2>Backup</h2>
+ <p class='note'>Export copies all songs, setlists, colours, pedal mapping and settings. Paste a backup into the box and tap Import to restore it.</p>
+ <textarea id='bk' rows='4'></textarea>
+ <div class='row'><button class='btn' data-act='exp'>Export</button><button class='btn' data-act='imp'>Import</button><button class='btn' data-act='rst'>Reset everything</button></div>`}
+$('setui').addEventListener('input',e=>{const t=e.target,k=t.dataset.k;if(!k)return;D.st[k]=t.type=='checkbox'?t.checked:t.type=='range'?+t.value:t.value;const l=$('v_'+k);if(l)l.textContent=D.st[k]+t.dataset.u;apply();save();if(k=='speed'&&!run)render()});
+$('setui').addEventListener('click',e=>{const t=e.target;if(t.dataset.acc){D.st.accent=t.dataset.acc;apply();save();drawSettings();return}
+ const a=t.dataset.act;if(a=='exp'){const v=JSON.stringify({songs:D.songs,sets:D.sets,cur:D.cur,song:D.song,map:D.map,st:D.st});$('bk').value=v;$('bk').select();try{navigator.clipboard.writeText(v)}catch(err){}}
+ if(a=='imp'){try{const o=JSON.parse($('bk').value);if(!Array.isArray(o.songs)||!Array.isArray(o.sets))throw 0;D.songs=o.songs;D.sets=o.sets;D.cur=o.cur||o.sets[0]?.id;D.song=o.song||o.songs[0]?.id;D.map=o.map||{};D.st=Object.assign({},DEF,o.st||{});D.songs.forEach((x,i)=>{if(!x.color)x.color=PAL[i%PAL.length]});if(run)stop();save();apply();render();drawSettings();alert('Backup imported.')}catch(err){alert('That doesn’t look like a valid backup.')}}
+ if(a=='rst'&&confirm('Delete all songs, setlists and settings?')){try{localStorage.removeItem('stageclick')}catch(err){}location.reload()}});
+let ka=null;
+function protect(){if(!D.st.protect)return;try{if(!ka){const dst=ctx.createMediaStreamDestination(),o=ctx.createOscillator(),g=ctx.createGain();g.gain.value=0;o.connect(g);g.connect(dst);o.start();ka=new Audio();ka.srcObject=dst.stream;ka.addEventListener('pause',()=>{if(run)setTimeout(()=>{if(run)ka.play().catch(()=>{})},500)})}
+ ka.play().catch(()=>{});
+ if('mediaSession' in navigator){const s=song(D.song),m=navigator.mediaSession;m.metadata=new MediaMetadata({title:s?s.name:'Click',artist:'The Anxious Click'});m.playbackState='playing';m.setActionHandler('play',()=>{if(!run)start()});m.setActionHandler('nexttrack',()=>move(1));m.setActionHandler('previoustrack',()=>move(-1))}}catch(e){}
+ try{if(navigator.audioSession)navigator.audioSession.type='playback'}catch(e){}}
+function onCtxState(){if(!run||!ctx)return;if(ctx.state!='running'){$('pbar').textContent='Audio interrupted. Resuming…';ctx.resume().catch(()=>{})}}
+setInterval(()=>{if(run&&ctx&&ctx.state!='running')ctx.resume().catch(()=>{})},1000);
+document.addEventListener('visibilitychange',()=>{if(document.visibilityState=='visible'&&run&&ctx&&ctx.state!='running')ctx.resume().catch(()=>{})});
+document.addEventListener('pointerdown',()=>{if(run&&ctx&&ctx.state!='running')ctx.resume().catch(()=>{})});
+window.addEventListener('beforeunload',e=>{if(run){e.preventDefault();e.returnValue=''}});
+apply();setVol(D.vol);tab('play');render();
+if('serviceWorker' in navigator)window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}));
+</script></body></html>
