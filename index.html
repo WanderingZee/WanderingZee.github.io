@@ -7,10 +7,18 @@
 <meta name="mobile-web-app-capable" content="yes">
 <link rel="icon" href="icons/icon-192.png">
 <link rel="apple-touch-icon" href="icons/icon-192.png">
+function parseBLE(d) {
+  let i = 1;
+  let status = 0;
 
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Pirata+One&display=swap" rel="stylesheet">
 <style>
 :root{color-scheme:light;--bg:#fff;--sf:#f4faf6;--tx:#10261a;--mu:#5c7466;--ac:#17894a;--ln:#d3e6da;--ok:#17894a;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+  while (i < d.length) {
+    // Skip the BLE-MIDI timestamp byte
+    if (d[i] & 0x80) {
+      i++;
+    }
 
 *{box-sizing:border-box}html{scroll-padding-top:env(safe-area-inset-top,0px)}
 body{margin:0;background:var(--bg);color:var(--tx);font:16px/1.4 "Barlow Condensed","Arial Narrow",system-ui,sans-serif;max-width:640px;margin:auto}
@@ -53,6 +61,7 @@ h2{font-size:22px;margin:6px 0}.brand{display:flex;align-items:center;justify-co
 </defs></svg>
 <div class="brand"><b>The Anxious Click</b></div>
 <nav id="nav"></nav>
+    if (i >= d.length) break;
 
 <section id="play">
  <select id="pset"></select>
@@ -64,20 +73,30 @@ h2{font-size:22px;margin:6px 0}.brand{display:flex;align-items:center;justify-co
   <div class='vr'><span class='note'>Volume</span><button class='btn sm' id='vdn' aria-label='Quieter'>−</button><b id='vlab'>80%</b><button class='btn sm' id='vup' aria-label='Louder'>+</button></div>
  </div>
 </section>
+    // Read MIDI status byte, if present
+    if (d[i] & 0x80) {
+      status = d[i++];
+    }
 
 <section id="songs">
  <div class="row"><button class="btn pri" id="newsong">+ New song</button></div>
  <div id="slist"></div>
  <div id="sedit"></div>
 </section>
+    if (!status) break;
 
 <section id="sets">
  <div class="row"><input id="setname" placeholder="Setlist name"><button class="btn pri" id="newset">+ Create</button></div>
  <div id="setlists"></div>
 </section>
+    const type = status & 0xF0;
 
 <div id='fl' style='position:fixed;inset:0;opacity:0;pointer-events:none;z-index:50'></div>
 <section id='set'><div id='setui'></div></section>
+    if (type === 0xF0) {
+      status = 0;
+      continue;
+    }
 
 <section id="pedal">
  <h2>M-Vave Chocolate Plus</h2>
@@ -89,6 +108,8 @@ h2{font-size:22px;margin:6px 0}.brand{display:flex;align-items:center;justify-co
  <div id="maps"></div>
  <div class="note" id="last"></div>
 </section>
+    const count =
+      (type === 0xC0 || type === 0xD0) ? 1 : 2;
 
 <script>
 const $=id=>document.getElementById(id);
@@ -104,12 +125,15 @@ D.songs.forEach((x,i)=>{if(!x.color)x.color=PAL[i%PAL.length]});
 const DEF={theme:'light',accent:PAL[0],text:100,accVol:1,subVol:.4,pitch:0,speed:100,flash:false,vib:false,wake:false,auto:false,defSound:'wood',protect:true};
 D.st=Object.assign({},DEF,D.st||{});
 const curSet=()=>D.sets.find(s=>s.id==D.cur);
+    if (i + count > d.length) break;
 
 /* tabs */
 const tabs=[['play','Play'],['songs','Songs'],['sets','Setlists'],['pedal','Pedal'],['set','Settings']];
 $('nav').innerHTML=tabs.map(t=>`<button data-t="${t[0]}">${t[1]}</button>`).join('');
 function tab(t){document.querySelectorAll('section').forEach(s=>s.classList.toggle('on',s.id==t));document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('on',b.dataset.t==t))}
 $('nav').onclick=e=>{if(e.target.dataset.t){tab(e.target.dataset.t);render();if(e.target.dataset.t=='set')drawSettings()}};
+    const d1 = d[i++];
+    const d2 = count === 2 ? d[i++] : 0;
 
 /* audio */
 let ctx,master,noiseBuf;
@@ -218,43 +242,7 @@ function onMidi(st,d1,d2){const t=st&0xF0;let key=null;
  $('last').textContent='Last message: '+key;
  if(learn){for(const k in D.map)if(D.map[k]==learn)delete D.map[k];D.map[key]=learn;learn=null;save();renderMaps();return}
  const a=D.map[key];if(a=='toggle')toggle();if(a=='next')move(1);if(a=='prev')move(-1);if(a=='restart'){stop();start()}if(a=='spdUp')setSpeed(D.st.speed+5);if(a=='spdDn')setSpeed(D.st.speed-5)}
-function parseBLE(d) {
-  let i = 1;
-  let status = 0;
-
-  while (i < d.length) {
-    // Skip the BLE-MIDI timestamp byte
-    if (d[i] & 0x80) {
-      i++;
-    }
-
-    if (i >= d.length) break;
-
-    // Read MIDI status byte, if present
-    if (d[i] & 0x80) {
-      status = d[i++];
-    }
-
-    if (!status) break;
-
-    const type = status & 0xF0;
-
-    if (type === 0xF0) {
-      status = 0;
-      continue;
-    }
-
-    const count =
-      (type === 0xC0 || type === 0xD0) ? 1 : 2;
-
-    if (i + count > d.length) break;
-
-    const d1 = d[i++];
-    const d2 = count === 2 ? d[i++] : 0;
-
-    onMidi(status, d1, d2);
-  }
-}
+function parseBLE(d){let i=1,run=0;while(i<d.length){let b=d[i];if(b&0x80){if(i+1<d.length&&(d[i+1]&0x80)){i++;b=d[i]}}
   if(b&0x80){run=b;i++}else b=run;const st=run,n=((st&0xF0)==0xC0||(st&0xF0)==0xD0)?1:2;if(st>=0xF0){i++;continue}
   onMidi(st,d[i]||0,n==2?(d[i+1]||0):0);i+=n}}
 $('btcon').onclick=async()=>{
@@ -322,3 +310,6 @@ window.addEventListener('beforeunload',e=>{if(run){e.preventDefault();e.returnVa
 apply();setVol(D.vol);tab('play');render();
 if('serviceWorker' in navigator)window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}));
 </script></body></html>
+    onMidi(status, d1, d2);
+  }
+}
